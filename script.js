@@ -1,40 +1,52 @@
-document.getElementById("procurementForm").addEventListener("submit", function(e) {
-  e.preventDefault(); // stop form from submitting
+// script.js
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("procurementForm");
+  const errorsDiv = document.getElementById("errors");
 
-  let errors = [];
+  form.addEventListener("submit", function (event) {
+    event.preventDefault(); // prevent default form submission
 
-  let tonnage = document.getElementById("tonnage").value;
-  let dealer = document.getElementById("dealer").value;
-  let cost = document.getElementById("cost").value;
-  let type = document.getElementById("type").value;
+    // Clear previous errors
+    errorsDiv.innerHTML = "";
+    let errors = [];
 
-  // Rule 1: Tonnage must be at least 1000kg
-  if (tonnage < 1000) {
-    errors.push("Tonnage must be at least 1000kg");
-  }
+    // Collect values
+    const tonnage = document.getElementById("tonnage").value.trim();
+    const dealer = document.getElementById("dealer").value.trim();
+    const cost = document.getElementById("cost").value.trim();
+    const type = document.getElementById("type").value.trim();
 
-  // Rule 2: Dealer name must be at least 2 characters
-  if (!dealer || dealer.length < 2) {
-    errors.push("Dealer name too short");
-  }
+    // === Error Simulation Rules ===
+    // 1. Tonnage must be > 1000
+    if (!tonnage || tonnage <= 1000) {
+      errors.push("❌ Error: Tonnage must be a positive number.");
+    }
 
-  // Rule 3: Cost must be at least 5 digits
-  if (cost.toString().length < 5) {
-    errors.push("Cost must be at least 5 digits");
-  }
+    // 2. Dealer name must not be empty
+    if (!dealer) {
+      errors.push("❌ Error: Dealer name is required.");
+    }
 
-  // Rule 4: Type cannot be empty
-  if (!type || type.trim() === "") {
-    errors.push("Type cannot be empty");
-  }
+    // 3. Cost must be > 3000
+    if (!cost || cost <= 3000) {
+      errors.push("❌ Error: Cost must be a positive number.");
+    }
 
-  // Show errors
-  let errorDiv = document.getElementById("errors");
-  errorDiv.innerHTML = "";
+    // 4. Type must not be empty
+    if (!type) {
+      errors.push("❌ Error: Type is required.");
+    }
 
-  if (errors.length > 0) {
-    errorDiv.innerHTML = "Errors found:<br>" + errors.map((err, i) => `${i+1}. ${err}`).join("<br>");
-  } else {
-    errorDiv.innerHTML = "Form is valid!";
-  }
+    // === Display Results ===
+    if (errors.length > 0) {
+      errorsDiv.style.color = "red";
+      errorsDiv.innerHTML = "<h3>Form Errors:</h3><ul>" + errors.map(e => `<li>${e}</li>`).join("") + "</ul>";
+    } else {
+      errorsDiv.style.color = "green";
+      errorsDiv.innerHTML = "<h3> Form submitted successfully!</h3>";
+
+      // Optional: reset form after success
+      form.reset();
+    }
+  });
 });
